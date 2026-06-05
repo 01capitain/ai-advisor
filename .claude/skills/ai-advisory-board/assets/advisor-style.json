@@ -1,0 +1,15 @@
+{
+  "dana-perino":        { "accent": "#0EA5E9" },
+  "laszlo-bock":        { "accent": "#8B5CF6" },
+  "marty-cagan":        { "accent": "#3B82F6" },
+  "mark-cuban":         { "accent": "#EF4444" },
+  "horst-schulze":      { "accent": "#F59E0B" },
+  "dj-patil":           { "accent": "#06B6D4" },
+  "steve-jobs":         { "accent": "#A855F7" },
+  "martin-fowler":      { "accent": "#22C55E" },
+  "eric-evans":         { "accent": "#F97316" },
+  "indra-nooyi":        { "accent": "#10B981" },
+  "lebron-james":       { "accent": "#EAB308" },
+  "whitney-wolfe-herd": { "accent": "#EC4899" },
+  "reid-hoffman":       { "accent": "#14B8A6" }
+}

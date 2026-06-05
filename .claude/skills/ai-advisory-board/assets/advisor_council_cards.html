@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Advisor Council Cards</title>
+<style>
+:root {
+  --bg:#071017;
+  --panel:#0d1724;
+  --text:#f8fafc;
+  --muted:#a8b3c7;
+  --line:rgba(255,255,255,.12);
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  min-height:100vh;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(14,165,233,.16), transparent 30%),
+    radial-gradient(circle at 80% 10%, rgba(236,72,153,.13), transparent 26%),
+    linear-gradient(180deg, #071017 0%, #0b1220 100%);
+  color:var(--text);
+}
+header {
+  max-width:1240px;
+  margin:0 auto;
+  padding:44px 24px 24px;
+}
+header h1 {
+  margin:0;
+  font-size:clamp(2rem, 5vw, 4.5rem);
+  letter-spacing:-.06em;
+  line-height:.95;
+}
+header p {
+  max-width:780px;
+  margin:16px 0 0;
+  color:var(--muted);
+  font-size:1.05rem;
+  line-height:1.6;
+}
+.toolbar {
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:24px;
+}
+.toolbar button {
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+  border-radius:999px;
+  padding:10px 14px;
+  cursor:pointer;
+}
+.grid {
+  max-width:1240px;
+  margin:0 auto;
+  padding:18px 24px 56px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(265px, 1fr));
+  gap:22px;
+}
+.advisor-card {
+  min-height:430px;
+  perspective:1200px;
+  outline:none;
+}
+.card-inner {
+  position:relative;
+  height:100%;
+  min-height:430px;
+  transform-style:preserve-3d;
+  transition:transform .65s cubic-bezier(.2,.8,.2,1);
+}
+.advisor-card.flipped .card-inner { transform:rotateY(180deg); }
+.card-face {
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  border:1px solid color-mix(in srgb, var(--accent) 68%, white 0%);
+  border-radius:24px;
+  overflow:hidden;
+  backface-visibility:hidden;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 18%, transparent), transparent 45%),
+    rgba(9,15,26,.88);
+  box-shadow:0 18px 55px rgba(0,0,0,.42), 0 0 0 1px rgba(255,255,255,.04) inset, 0 0 35px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.card-front::before, .card-back::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,.16), transparent 28%, transparent 70%, rgba(255,255,255,.05));
+  pointer-events:none;
+}
+.card-back {
+  transform:rotateY(180deg);
+  padding:24px;
+}
+.portrait-wrap {
+  height:250px;
+  margin:14px 14px 0;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.14);
+  background:#111827;
+}
+.portrait-wrap img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.front-copy { padding:18px 20px 16px; }
+.eyebrow {
+  margin:0 0 8px;
+  color:var(--accent);
+  text-transform:uppercase;
+  letter-spacing:.13em;
+  font-size:.72rem;
+  font-weight:800;
+}
+h2 {
+  margin:0;
+  font-size:1.85rem;
+  line-height:1;
+  letter-spacing:-.05em;
+}
+.role {
+  margin:10px 0 0;
+  color:var(--accent);
+  font-weight:800;
+  font-size:1.02rem;
+  line-height:1.2;
+}
+.position {
+  margin:10px 0 0;
+  color:var(--muted);
+  line-height:1.35;
+  font-size:.94rem;
+}
+.when {
+  margin:16px 0 18px;
+  color:#dbeafe;
+  line-height:1.55;
+  font-size:1rem;
+}
+.qlabel { margin-top:10px; }
+ol {
+  margin:0;
+  padding-left:20px;
+  display:grid;
+  gap:12px;
+}
+li {
+  padding-left:4px;
+  color:#f8fafc;
+  line-height:1.35;
+  font-weight:650;
+}
+.flip-hint {
+  margin:auto 18px 18px;
+  border:1px solid color-mix(in srgb, var(--accent) 65%, white 10%);
+  background:color-mix(in srgb, var(--accent) 24%, black 76%);
+  color:#fff;
+  border-radius:14px;
+  padding:11px 12px;
+  font-weight:800;
+  cursor:pointer;
+  position:relative;
+  z-index:2;
+}
+.advisor-card:hover .card-face {
+  box-shadow:0 22px 70px rgba(0,0,0,.48), 0 0 45px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+footer {
+  max-width:1240px;
+  margin:0 auto;
+  padding:0 24px 40px;
+  color:#7f8da3;
+  font-size:.82rem;
+}
+@media (max-width:640px) {
+  .advisor-card, .card-inner { min-height:455px; }
+  .portrait-wrap { height:245px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Advisor Council</h1>
+  <p>Flip each card to switch between the council member’s portrait profile and the challenge side with when to seek advice plus signature assumption-breaking questions.</p>
+  <div class="toolbar">
+    <button id="showFront">Show all portraits</button>
+    <button id="showBack">Show all challenge sides</button>
+  </div>
+</header>
+<main class="grid">
+
+<article class="advisor-card" style="--accent:#8B5CF6" tabindex="0" aria-label="Steve Jobs advisor card">
+  <div class="card-inner">
+    <section class="card-face card-front">
+      <div class="portrait-wrap"><img src="portraits/steve-jobs.png" alt="Stylized portrait of Steve Jobs" /></div>
+      <div class="front-copy">
+        <p class="eyebrow">Advisor Council</p>
+        <h2>Steve Jobs</h2>
+        <p class="role">Product Simplicity Advisor</p>
+        <p class="position">Co-founder of Apple; former CEO of Apple and Pixar chairman</p>
+      </div>
+      <button class="flip-hint" type="button">View challenge side</button>
+    </section>
+    <section class="card-face card-back">
+      <p class="eyebrow">When to ask</p>
+      <h2>Steve Jobs</h2>
+      <p class="when">Ask for his perspective when the product feels bloated, the user journey is getting noisy, or the team is adding features instead of sharpening the core experience.</p>
+      <p class="eyebrow qlabel">Signature questions</p>
+      <ol>
+        <li>What can we remove and still make the product better?</li><li>Is this simple enough that the user instantly understands it?</li><li>Are we building something people will love, or just something that works?</li>
+      </ol>
+      <button class="flip-hint" type="button">Back to portrait</button>
+    </section>
+  </div>
+</article>
+
+<article class="advisor-card" style="--accent:#0EA5E9" tabindex="0" aria-label="Marty Cagan advisor card">
+  <div class="card-inner">
+    <section class="card-face card-front">
+      <div class="portrait-wrap"><img src="portraits/marty-cagan.png" alt="Stylized portrait of Marty Cagan" /></div>
+      <div class="front-copy">
+        <p class="eyebrow">Advisor Council</p>
+        <h2>Marty Cagan</h2>
+        <p class="role">Product Discovery Advisor</p>
+        <p class="position">Founder of Silicon Valley Product Group; author of Inspired</p>
+      </div>
+      <button class="flip-hint" type="button">View challenge side</button>
+    </section>
+    <section class="card-face card-back">
+      <p class="eyebrow">When to ask</p>
+      <h2>Marty Cagan</h2>
+      <p class="when">Ask for his perspective before committing roadmap capacity, defining an MVP, or treating a customer request as validated product value.</p>
+      <p class="eyebrow qlabel">Signature questions</p>
+      <ol>
+        <li>What evidence proves this is a real customer problem?</li><li>What is the smallest test that could de-risk this decision?</li><li>Are we solving an outcome or just shipping a feature?</li>
+      </ol>
+      <button class="flip-hint" type="button">Back to portrait</button>
+    </section>
+  </div>
+</article>
+
+<article class="advisor-card" style="--accent:#22C55E" tabindex="0" aria-label="Martin Fowler advisor card">
+  <div class="card-inner">
+    <section class="card-face card-front">
+      <div class="portrait-wrap"><img src="portraits/martin-fowler.png" alt="Stylized portrait of Martin Fowler" /></div>
+      <div class="front-copy">
+        <p class="eyebrow">Advisor Council</p>
+        <h2>Martin Fowler</h2>
+        <p class="role">Architecture Advisor</p>
+        <p class="position">Chief Scientist at Thoughtworks; author of Refactoring</p>
+      </div>
+      <button class="flip-hint" type="button">View challenge side</button>
+    </section>
+    <section class="card-face card-back">
+      <p class="eyebrow">When to ask</p>
+      <h2>Martin Fowler</h2>
+      <p class="when">Ask for his perspective when a product decision creates architectural consequences, technical debt, or integration paths that may be hard to reverse.</p>
+      <p class="eyebrow qlabel">Signature questions</p>
+      <ol>
+        <li>Can this evolve without a rewrite?</li><li>Where are the boundaries and coupling risks?</li><li>Are we creating technical debt intentionally or accidentally?</li>
+      </ol>
+      <button class="flip-hint" type="button">Back to portrait</button>
+    </section>
+  </div>
+</article>
+
+<article class="advisor-card" style="--accent:#F59E0B" tabindex="0" aria-label="Eric Evans advisor card">
+  <div class="card-inner">
+    <section class="card-face card-front">
+      <div class="portrait-wrap"><img src="portraits/eric-evans.png" alt="Stylized portrait of Eric Evans" /></div>
+      <div class="front-copy">
+        <p class="eyebrow">Advisor Council</p>
+        <h2>Eric Evans</h2>
+        <p class="role">Domain Modeling Advisor</p>
+        <p class="position">Author of Domain-Driven Design; founder of Domain Language</p>
+      </div>
+      <button class="flip-hint" type="button">View challenge side</button>
+    </section>
+    <section class="card-face card-back">
+      <p class="eyebrow">When to ask</p>
+      <h2>Eric Evans</h2>
+      <p class="when">Ask for his perspective when the team debates whether this is really about rooms, breakfasts and guests, or a broader entitlement-validation model.</p>
+      <p class="eyebrow qlabel">Signature questions</p>
+      <ol>
+        <li>Are we modeling the real domain or only today&#x27;s UI?</li><li>What is the ubiquitous language of this product?</li><li>Which concept must stay stable as use cases expand?</li>
+      </ol>
+      <button class="flip-hint" type="button">Back to portrait</button>
+    </section>
+  </div>
+</article>
+
+<article class="advisor-card" style="--accent:#06B6D4" tabindex="0" aria-label="DJ Patil advisor card">
+  <div class="card-inner">
+    <section class="card-face card-front">
+      <div class="portrait-wrap"><img src="portraits/dj-patil.png" alt="Stylized portrait of DJ Patil" /></div>
+      <div class="front-copy">
+        <p class="eyebrow">Advisor Council</p>
+        <h2>DJ Patil</h2>
+        <p class="role">Telemetry &amp; Data Advisor</p>
+        <p class="position">Former U.S. Chief Data Scientist; data product leader</p>
+      </div>
+      <button class="flip-hint" type="button">View challenge side</button>
+    </section>
+    <section class="card-face card-back">
+      <p class="eyebrow">When to ask</p>
+      <h2>DJ Patil</h2>
+      <p class="when">Ask for his perspective before launch, when defining telemetry, or when the team needs evidence to decide whether Version A is enough or PMS integration is justified.</p>
+      <p class="eyebrow qlabel">Signature questions</p>
+      <ol>
+        <li>What signal will tell us customers are getting value?</li><li>What data do we need from day one?</li><li>How will this metric change a product decision?</li>
+      </ol>
+      <button class="flip-hint" type="button">Back to portrait</button>
+    </section>
+  </div>
+</article>
+
+<article class="advisor-card" style="--accent:#EF4444" tabindex="0" aria-label="Mark Cuban advisor card">
+  <div class="card-inner">
+    <section class="card-face card-front">
+      <div class="portrait-wrap"><img src="portraits/mark-cuban.png" alt="Stylized portrait of Mark Cuban" /></div>
+      <div class="front-copy">
+        <p class="eyebrow">Advisor Council</p>
+        <h2>Mark Cuban</h2>
+        <p class="role">Entrepreneurship &amp; Pragmatism Advisor</p>
+        <p class="position">Entrepreneur, investor, former principal owner of the Dallas Mavericks</p>
+      </div>
+      <button class="flip-hint" type="button">View challenge side</button>
+    </section>
+    <section class="card-face card-back">
+      <p class="eyebrow">When to ask</p>
+      <h2>Mark Cuban</h2>
+      <p class="when">Ask for his perspective when the team is overthinking, delaying customer conversations, or needs a pragmatic path to test willingness to pay and adoption.</p>
+      <p class="eyebrow qlabel">Signature questions</p>
+      <ol>
+        <li>Have we talked to enough customers this week?</li><li>What would make a hotel say yes tomorrow?</li><li>Is this worth paying for, or just interesting?</li>
+      </ol>
+      <button class="flip-hint" type="button">Back to portrait</button>
+    </section>
+  </div>
+</article>
+
+<article class="advisor-card" style="--accent:#8B5CF6" tabindex="0" aria-label="LeBron James advisor card">
+  <div class="card-inner">
+    <section class="card-face card-front">
+      <div class="portrait-wrap"><img src="portraits/lebron-james.png" alt="Stylized portrait of LeBron James" /></div>
+      <div class="front-copy">
+        <p class="eyebrow">Advisor Council</p>
+        <h2>LeBron James</h2>
+        <p class="role">Leadership &amp; Team Excellence Advisor</p>
+        <p class="position">NBA player for the Los Angeles Lakers; founder of the LeBron James Family Foundation</p>
+      </div>
+      <button class="flip-hint" type="button">View challenge side</button>
+    </section>
+    <section class="card-face card-back">
+      <p class="eyebrow">When to ask</p>
+      <h2>LeBron James</h2>
+      <p class="when">Ask for his perspective when alignment across product, engineering, support, sales and leadership matters more than individual team optimization.</p>
+      <p class="eyebrow qlabel">Signature questions</p>
+      <ol>
+        <li>Does this make the whole organization better?</li><li>Who needs to be brought into the play?</li><li>Can we ship, learn, and raise the team standard together?</li>
+      </ol>
+      <button class="flip-hint" type="button">Back to portrait</button>
+    </section>
+  </div>
+</article>
+
+<article class="advisor-card" style="--accent:#22C55E" tabindex="0" aria-label="Indra Nooyi advisor card">
+  <div class="card-inner">
+    <section class="card-face card-front">
+      <div class="portrait-wrap"><img src="portraits/indra-nooyi.png" alt="Stylized portrait of Indra Nooyi" /></div>
+      <div class="front-copy">
+        <p class="eyebrow">Advisor Council</p>
+        <h2>Indra Nooyi</h2>
+        <p class="role">Executive Leadership Advisor</p>
+        <p class="position">Former Chairman and CEO of PepsiCo</p>
+      </div>
+      <button class="flip-hint" type="button">View challenge side</button>
+    </section>
+    <section class="card-face card-back">
+      <p class="eyebrow">When to ask</p>
+      <h2>Indra Nooyi</h2>
+      <p class="when">Ask for her perspective when a product choice affects company strategy, operational discipline, executive sponsorship, or long-term portfolio fit.</p>
+      <p class="eyebrow qlabel">Signature questions</p>
+      <ol>
+        <li>How does this fit the company strategy?</li><li>What operating model is needed to make this succeed?</li><li>Are we balancing short-term proof with long-term value?</li>
+      </ol>
+      <button class="flip-hint" type="button">Back to portrait</button>
+    </section>
+  </div>
+</article>
+
+<article class="advisor-card" style="--accent:#EC4899" tabindex="0" aria-label="Whitney Wolfe Herd advisor card">
+  <div class="card-inner">
+    <section class="card-face card-front">
+      <div class="portrait-wrap"><img src="portraits/whitney-wolfe-herd.png" alt="Stylized portrait of Whitney Wolfe Herd" /></div>
+      <div class="front-copy">
+        <p class="eyebrow">Advisor Council</p>
+        <h2>Whitney Wolfe Herd</h2>
+        <p class="role">Adoption &amp; Growth Advisor</p>
+        <p class="position">Founder and CEO of Bumble; co-founder of Tinder</p>
+      </div>
+      <button class="flip-hint" type="button">View challenge side</button>
+    </section>
+    <section class="card-face card-back">
+      <p class="eyebrow">When to ask</p>
+      <h2>Whitney Wolfe Herd</h2>
+      <p class="when">Ask for her perspective when the challenge is adoption, trust, onboarding, behavior change, or turning first use into repeat use.</p>
+      <p class="eyebrow qlabel">Signature questions</p>
+      <ol>
+        <li>What makes the first experience feel safe and obvious?</li><li>Why would users come back tomorrow?</li><li>Where does adoption break emotionally, not just functionally?</li>
+      </ol>
+      <button class="flip-hint" type="button">Back to portrait</button>
+    </section>
+  </div>
+</article>
+
+<article class="advisor-card" style="--accent:#0EA5E9" tabindex="0" aria-label="Horst Schulze advisor card">
+  <div class="card-inner">
+    <section class="card-face card-front">
+      <div class="portrait-wrap"><img src="portraits/horst-schulze.png" alt="Stylized portrait of Horst Schulze" /></div>
+      <div class="front-copy">
+        <p class="eyebrow">Advisor Council</p>
+        <h2>Horst Schulze</h2>
+        <p class="role">Service &amp; Operations Advisor</p>
+        <p class="position">Co-founder of The Ritz-Carlton Hotel Company; founder of Capella Hotel Group</p>
+      </div>
+      <button class="flip-hint" type="button">View challenge side</button>
+    </section>
+    <section class="card-face card-back">
+      <p class="eyebrow">When to ask</p>
+      <h2>Horst Schulze</h2>
+      <p class="when">Ask for his perspective when the product touches service quality, staff behavior, guest experience, or the operational standards of a hotel.</p>
+      <p class="eyebrow qlabel">Signature questions</p>
+      <ol>
+        <li>Does this help staff deliver better service?</li><li>What happens during the busiest breakfast rush?</li><li>Would this improve the guest experience or just control a process?</li>
+      </ol>
+      <button class="flip-hint" type="button">Back to portrait</button>
+    </section>
+  </div>
+</article>
+
+<article class="advisor-card" style="--accent:#14B8A6" tabindex="0" aria-label="Reid Hoffman advisor card">
+  <div class="card-inner">
+    <section class="card-face card-front">
+      <div class="portrait-wrap"><img src="portraits/reid-hoffman.png" alt="Stylized portrait of Reid Hoffman" /></div>
+      <div class="front-copy">
+        <p class="eyebrow">Advisor Council</p>
+        <h2>Reid Hoffman</h2>
+        <p class="role">Distribution &amp; Scale Advisor</p>
+        <p class="position">Co-founder of LinkedIn; partner at Greylock</p>
+      </div>
+      <button class="flip-hint" type="button">View challenge side</button>
+    </section>
+    <section class="card-face card-back">
+      <p class="eyebrow">When to ask</p>
+      <h2>Reid Hoffman</h2>
+      <p class="when">Ask for his perspective when thinking about rollout through the existing 4,000-client base, network effects, partnerships, or expansion into adjacent use cases.</p>
+      <p class="eyebrow qlabel">Signature questions</p>
+      <ol>
+        <li>How does this spread through our customer network?</li><li>What leverage do we already have but are not using?</li><li>Is this a feature, a product, or the start of a platform?</li>
+      </ol>
+      <button class="flip-hint" type="button">Back to portrait</button>
+    </section>
+  </div>
+</article>
+</main>
+<footer>
+  Portraits are cropped from the generated advisor council image in this conversation. Public roles are summarized from public biographies and official profile pages.
+</footer>
+<script>
+const cards = Array.from(document.querySelectorAll('.advisor-card'));
+cards.forEach(card => {
+  card.addEventListener('click', (event) => {
+    if (event.target.closest('button') || event.target === card) card.classList.toggle('flipped');
+    else card.classList.toggle('flipped');
+  });
+  card.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      card.classList.toggle('flipped');
+    }
+  });
+});
+document.getElementById('showFront').addEventListener('click', () => cards.forEach(c => c.classList.remove('flipped')));
+document.getElementById('showBack').addEventListener('click', () => cards.forEach(c => c.classList.add('flipped')));
+</script>
+</body>
+</html>

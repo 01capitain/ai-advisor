@@ -237,30 +237,38 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
  background:radial-gradient(1100px 600px at 75% -8%,rgba(14,165,233,.14),transparent 55%),linear-gradient(180deg,#071017,#0b1220);}
 a{color:inherit;}
-.topbar{position:sticky;top:0;z-index:30;backdrop-filter:blur(10px);background:rgba(7,16,23,.82);border-bottom:1px solid var(--line);}
-.topbar-inner{max-width:1180px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
-.brand{font-weight:800;letter-spacing:-.02em;font-size:1.05rem;}
+:root{--top:60px;--side:300px;}
+.topbar{position:sticky;top:0;z-index:30;height:var(--top);backdrop-filter:blur(10px);background:rgba(7,16,23,.86);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 18px;}
+.sidebar-toggle{flex:none;width:38px;height:38px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);border-radius:10px;cursor:pointer;font-size:1.05rem;line-height:1;}
+.sidebar-toggle:hover{background:rgba(255,255,255,.12);}
+.brand{font-weight:800;letter-spacing:-.02em;font-size:1.05rem;cursor:pointer;user-select:none;}
+.brand:hover{color:#fff;}
 .brand span{color:var(--muted);font-weight:600;}
-.tabs{display:flex;gap:8px;margin-left:auto;}
-.tabs button{border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);border-radius:999px;padding:8px 16px;cursor:pointer;font-size:.92rem;font-weight:600;transition:.15s;}
-.tabs button:hover{background:rgba(255,255,255,.1);}
-.tabs button.active{background:var(--accent);border-color:var(--accent);color:#04121b;}
-main{max-width:1180px;margin:0 auto;padding:30px 22px 90px;}
-.view{display:none;animation:fade .3s ease;}
-.view.active{display:block;}
+
+.layout{display:flex;align-items:stretch;}
+.sidebar{flex:0 0 var(--side);width:var(--side);border-right:1px solid var(--line);background:rgba(10,17,28,.55);
+ height:calc(100vh - var(--top));position:sticky;top:var(--top);overflow-y:auto;overflow-x:hidden;transition:flex-basis .22s ease,width .22s ease,opacity .18s ease;}
+.layout.collapsed .sidebar{flex-basis:0;width:0;opacity:0;border-right:0;}
+.sidebar-head{padding:18px 18px 8px;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:800;}
+.conv-list{padding:4px 10px 30px;display:grid;gap:6px;}
+.conv-item{padding:11px 13px;border-radius:10px;cursor:pointer;border:1px solid transparent;transition:background .15s,border-color .15s;}
+.conv-item:hover{background:rgba(255,255,255,.05);}
+.conv-item.active{background:color-mix(in srgb,var(--accent) 18%,transparent);border-color:color-mix(in srgb,var(--accent) 45%,transparent);}
+.conv-item .t{font-weight:700;font-size:.94rem;line-height:1.28;margin:0 0 5px;}
+.conv-item .m{font-size:.76rem;color:var(--muted);}
+.conv-item .avs{display:flex;margin-top:9px;}
+.conv-item .avs img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:2px solid var(--panel);margin-left:-8px;}
+.conv-item .avs img:first-child{margin-left:0;}
+.sidebar-empty{padding:14px 18px;color:var(--muted);font-size:.85rem;line-height:1.5;}
+
+.content{flex:1;min-width:0;}
+.content .view{display:none;max-width:1180px;margin:0 auto;padding:30px clamp(20px,3vw,34px) 90px;}
+.content .view.active{display:block;animation:fade .3s ease;}
+/* the Advisors overview fills the full screen width; the conversation view stays a comfortable reading column */
+.content #view-advisors{max-width:none;margin:0;padding:30px clamp(22px,3.2vw,56px) 90px;}
 @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 h1.page{font-size:clamp(1.6rem,4vw,2.6rem);letter-spacing:-.04em;margin:.2em 0 .1em;}
 .sub{color:var(--muted);margin:0 0 26px;}
-
-/* history */
-.hist-list{display:grid;gap:14px;}
-.hist-card{display:flex;gap:18px;align-items:center;border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:18px 20px;cursor:pointer;transition:.18s;}
-.hist-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.25);box-shadow:0 14px 40px rgba(0,0,0,.4);}
-.hist-card .meta{flex:1;}
-.hist-card h3{margin:0 0 6px;font-size:1.2rem;letter-spacing:-.02em;}
-.hist-card .line{color:var(--muted);font-size:.9rem;}
-.hist-avatars{display:flex;}
-.hist-avatars img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--panel);margin-left:-10px;}
 .pill{display:inline-block;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:.78rem;color:var(--muted);}
 
 /* conversation */
@@ -304,15 +312,14 @@ h1.page{font-size:clamp(1.6rem,4vw,2.6rem);letter-spacing:-.04em;margin:.2em 0 .
 .msg.active .bubble .more{display:none;}
 
 /* advisor in conversation: inactive = profile card only; active = advice + card */
-.advisors{display:flex;flex-wrap:wrap;gap:16px;margin:0 0 6px;align-items:flex-start;}
+.advisors{display:grid;gap:14px;margin:0 0 6px;align-items:start;}
 .adv{cursor:pointer;}
 .adv .resp{display:none;}
-.adv .card{transition:filter .3s;}
-.card.static{width:200px;height:300px;flex:0 0 200px;}
-.adv:not(.active){width:200px;}
+.adv .card{width:100%;height:auto;aspect-ratio:3/4;flex:none;transition:filter .3s;}
 .adv:not(.active) .card{filter:grayscale(.8) brightness(.82) opacity(.7);}
 .adv:not(.active):hover .card{filter:grayscale(.25) brightness(.96) opacity(1);}
-.adv.active{width:100%;display:flex;gap:22px;align-items:flex-start;}
+.adv.active{grid-column:1 / -1;display:flex;gap:22px;align-items:flex-start;}
+.adv.active .card{width:200px;flex:0 0 200px;}
 .adv.active .resp{display:block;flex:1;min-width:0;order:1;border:1px solid color-mix(in srgb,var(--accent) 55%,var(--line));border-left:4px solid var(--accent);border-radius:16px;padding:18px 22px;background:var(--panel);box-shadow:0 12px 40px color-mix(in srgb,var(--accent) 14%,transparent);}
 .adv.active .card{order:2;filter:none;}
 .adv .resp .who{font-weight:800;letter-spacing:-.01em;margin:0 0 2px;}
@@ -349,22 +356,42 @@ h1.page{font-size:clamp(1.6rem,4vw,2.6rem);letter-spacing:-.04em;margin:.2em 0 .
 .toolbar button{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:600;}
 
 .empty{color:var(--muted);text-align:center;padding:60px 0;}
-@media(max-width:680px){.adv-row{flex-direction:column;}.card{width:100%;flex-basis:auto;}}
+
+/* workflow graphic on the board home */
+.workflow{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 70%);border-radius:20px;padding:26px 24px 28px;margin:0 0 36px;}
+.workflow h2{margin:0 0 6px;font-size:1.2rem;letter-spacing:-.02em;}
+.workflow .lead{color:var(--muted);margin:0 0 24px;font-size:.94rem;line-height:1.55;max-width:780px;}
+.wf-flow{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;justify-content:center;}
+.wf-step{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding-top:8px;}
+.wf-name{font-weight:800;font-size:.92rem;}
+.wf-cap{font-size:.74rem;color:var(--muted);max-width:150px;line-height:1.35;}
+.wf-arrow{align-self:center;color:var(--muted);font-size:1.5rem;opacity:.6;padding:0 2px;}
+.wf-user{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--line);background:rgba(255,255,255,.05);font-weight:800;}
+.wf-dana-img{width:98px;height:134px;border-radius:14px;object-fit:cover;border:2px solid var(--accent);box-shadow:0 10px 30px color-mix(in srgb,var(--accent) 25%,transparent);}
+.wf-net{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:9px;border:1px dashed var(--line);border-radius:14px;}
+.wf-net img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid transparent;}
+.wf-net img.dim{filter:grayscale(.85) brightness(.7) opacity(.5);}
+.wf-net img.sel{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent);}
+@media(max-width:760px){.wf-flow{flex-direction:column;align-items:center;}.wf-arrow{transform:rotate(90deg);}}
+
+@media(max-width:680px){.adv.active{flex-direction:column;}.card{width:100%;flex-basis:auto;}}
 </style>
 </head>
 <body>
-<header class="topbar"><div class="topbar-inner">
-  <div class="brand">AI Advisory Board <span>· presentation</span></div>
-  <nav class="tabs">
-    <button data-go="#/history">History</button>
-    <button data-go="#/advisors">Advisors</button>
-  </nav>
-</div></header>
-<main>
-  <section id="view-history" class="view"></section>
-  <section id="view-conversation" class="view"></section>
-  <section id="view-advisors" class="view"></section>
-</main>
+<header class="topbar">
+  <button class="sidebar-toggle" id="sidebar-toggle" title="Show/hide conversations" aria-label="Toggle conversation list">☰</button>
+  <div class="brand" data-go="#/advisors" title="Back to the board">AI Advisory Board <span>· the board</span></div>
+</header>
+<div class="layout" id="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">Conversations</div>
+    <div class="conv-list" id="conv-list"></div>
+  </aside>
+  <main class="content">
+    <section id="view-conversation" class="view"></section>
+    <section id="view-advisors" class="view"></section>
+  </main>
+</div>
 <script>
 const DATA = /*__DATA__*/;
 const advBySlug = Object.fromEntries(DATA.advisors.map(a=>[a.slug,a]));
@@ -410,25 +437,22 @@ function profileCard(adv){
   return c;
 }
 
-function renderHistory(){
-  const v = $('#view-history'); v.innerHTML='';
-  v.append(el('h1','page','Conversation history'));
-  v.append(el('p','sub','Board conversations conducted in the terminal, saved to this repository.'));
-  if(!DATA.conversations.length){ v.append(el('div','empty','No saved conversations yet. Run the <code>save</code> command after a board session.')); return; }
-  const list = el('div','hist-list');
-  for(const c of DATA.conversations){
-    const card = el('div','hist-card');
-    const avatars = (c.advisors_involved||[]).map(s=>advBySlug[s]).filter(a=>a&&a.portrait)
-      .map(a=>`<img src="${a.portrait}" title="${esc(a.name)}" alt="">`).join('');
-    card.innerHTML = `<div class="meta">
-        <h3>${esc(c.title)}</h3>
-        <div class="line"><span class="pill">${c.turn_count} turn${c.turn_count===1?'':'s'}</span> &nbsp; last message ${esc(c.last_user_date||c.date||'')}</div>
-      </div>
-      <div class="hist-avatars">${avatars}</div>`;
-    card.addEventListener('click',()=>location.hash='#/c/'+c.slug);
-    list.append(card);
+function renderSidebar(activeSlug){
+  const list = $('#conv-list'); list.innerHTML='';
+  if(!DATA.conversations.length){
+    list.append(el('div','sidebar-empty','No saved conversations yet. Run the <code>save</code> command after a board session.'));
+    return;
   }
-  v.append(list);
+  for(const c of DATA.conversations){
+    const item = el('div','conv-item'+(c.slug===activeSlug?' active':''));
+    const avs = (c.advisors_involved||[]).filter(s=>s!=='dana-perino').map(s=>advBySlug[s]).filter(a=>a&&a.portrait)
+      .map(a=>`<img src="${a.portrait}" title="${esc(a.name)}" alt="">`).join('');
+    item.innerHTML = `<p class="t">${esc(c.title)}</p>`+
+      `<div class="m">${c.turn_count} turn${c.turn_count===1?'':'s'} · ${esc(c.last_user_date||c.date||'')}</div>`+
+      `${avs?`<div class="avs">${avs}</div>`:''}`;
+    item.addEventListener('click',()=>location.hash='#/c/'+c.slug);
+    list.append(item);
+  }
 }
 
 function renderConversation(slug, turnNo){
@@ -472,6 +496,7 @@ function renderConversation(slug, turnNo){
     if(t.advisors.length){
       turn.append(el('div','sectiontitle','Advisor responses — click a card to expand'));
       const wrap = el('div','advisors');
+      wrap.style.gridTemplateColumns = `repeat(${Math.min(t.advisors.length,6)},minmax(0,1fr))`;
       for(const a of t.advisors){
         const adv = advBySlug[a.slug];
         const item = el('div','adv');
@@ -498,31 +523,59 @@ function renderConversation(slug, turnNo){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+function workflowGraphic(){
+  const dana = advBySlug['dana-perino'];
+  const danaImg = dana&&dana.portrait ? `<img class="wf-dana-img" style="border-color:${dana.accent}" src="${dana.portrait}" alt="Dana Perino">` : '';
+  const sel = new Set(['marty-cagan','mark-cuban','horst-schulze','dj-patil','laszlo-bock']);
+  const circles = DATA.advisors.filter(a=>a.slug!=='dana-perino').map(a=>{
+    const on = sel.has(a.slug);
+    return `<img class="${on?'sel':'dim'}" ${on?`style="border-color:${a.accent}"`:''} src="${a.portrait}" title="${esc(a.name)}" alt="">`;
+  }).join('');
+  const w = el('div','workflow');
+  w.style.setProperty('--accent', (dana&&dana.accent)||'#0EA5E9');
+  w.innerHTML = `
+    <h2>How the board works</h2>
+    <p class="lead">Every request is routed through <strong>Dana Perino</strong>, the board's single point of contact. She refines your brief, selects the subset of advisors who should weigh in, collects their responses, and returns one synthesized answer to you.</p>
+    <div class="wf-flow">
+      <div class="wf-step"><div class="wf-user">You</div><div class="wf-name">Request</div><div class="wf-cap">you ask the board a question</div></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">${danaImg}<div class="wf-name">Dana Perino</div><div class="wf-cap">refines the brief &amp; selects who responds</div></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step"><div class="wf-net">${circles}</div><div class="wf-name">Advisors</div><div class="wf-cap">the selected subset responds</div></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">${danaImg}<div class="wf-name">Dana Perino</div><div class="wf-cap">synthesizes one answer</div></div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step"><div class="wf-user">You</div><div class="wf-name">Answer</div><div class="wf-cap">one clear recommendation</div></div>
+    </div>`;
+  return w;
+}
+
 function renderAdvisors(){
   const v = $('#view-advisors'); v.innerHTML='';
+  v.append(workflowGraphic());
   v.append(el('h1','page','The board'));
   v.append(el('p','sub','All available advisors. Click a card to flip between portrait and background.'));
-  const tb = el('div','toolbar');
-  const front = el('button',null,'Show all portraits');
-  const back = el('button',null,'Show all backgrounds');
-  tb.append(front,back); v.append(tb);
   const grid = el('div','grid');
   for(const a of DATA.advisors) grid.append(flipCard(a));
   v.append(grid);
-  front.addEventListener('click',()=>grid.querySelectorAll('.card').forEach(c=>c.classList.remove('flipped')));
-  back.addEventListener('click',()=>grid.querySelectorAll('.card').forEach(c=>c.classList.add('flipped')));
 }
 
 function route(){
-  const h = location.hash || '#/history';
+  const h = location.hash || '#/advisors';
   const show = id => document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active',s.id===id));
-  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.go && h.startsWith(b.dataset.go)));
   let m;
-  if((m=h.match(/^#\/c\/([^/]+)(?:\/t\/(\d+))?/))){ show('view-conversation'); renderConversation(decodeURIComponent(m[1]), m[2]); }
-  else if(h.startsWith('#/advisors')){ show('view-advisors'); renderAdvisors(); }
-  else { show('view-history'); renderHistory(); }
+  if((m=h.match(/^#\/c\/([^/]+)(?:\/t\/(\d+))?/))){
+    const slug = decodeURIComponent(m[1]);
+    renderSidebar(slug); show('view-conversation'); renderConversation(slug, m[2]);
+  } else {
+    // brand / default → the board (Advisors), open when no conversation is selected
+    renderSidebar(null); show('view-advisors'); renderAdvisors();
+  }
 }
-document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>location.hash=b.dataset.go));
+// top-left brand returns to the board
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>location.hash=b.dataset.go));
+// collapse / expand the conversation sidebar for more screen space
+$('#sidebar-toggle').addEventListener('click',()=>$('#layout').classList.toggle('collapsed'));
 window.addEventListener('hashchange',route);
 route();
 </script>
